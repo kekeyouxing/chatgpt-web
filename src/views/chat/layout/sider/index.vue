@@ -7,7 +7,6 @@ import Footer from './Footer.vue'
 import { useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { PromptStore } from '@/components/common'
-
 const appStore = useAppStore()
 const chatStore = useChatStore()
 
@@ -16,6 +15,11 @@ const show = ref(false)
 
 const collapsed = computed(() => appStore.siderCollapsed)
 
+function showAppStore() {
+  chatStore.showAppStore()
+  if (isMobile.value)
+    appStore.setSiderCollapsed(true)
+}
 function handleAdd() {
   chatStore.addHistory({ title: 'New Chat', uuid: Date.now(), isEdit: false })
   if (isMobile.value)
@@ -71,17 +75,12 @@ watch(
   >
     <div class="flex flex-col h-full" :style="mobileSafeArea">
       <main class="flex flex-col flex-1 min-h-0">
-        <div class="p-4">
-          <NButton dashed block @click="handleAdd">
-            {{ $t('chat.newChatButton') }}
-          </NButton>
-        </div>
-        <div class="flex-1 min-h-0 pb-4 overflow-hidden">
+        <div class="flex-1 min-h-0 py-4 overflow-hidden">
           <List />
         </div>
         <div class="p-4">
-          <NButton block @click="show = true">
-            {{ $t('store.siderButton') }}
+          <NButton block @click="showAppStore">
+            {{ $t('chat.appStore') }}
           </NButton>
         </div>
       </main>

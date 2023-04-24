@@ -5,21 +5,23 @@ export function setupPageGuard(router: Router) {
   router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStoreWithout()
     if (!authStore.session) {
-      try {
-        const data = await authStore.getSession()
-        if (String(data.auth) === 'false' && authStore.token)
-          authStore.removeToken()
-        if (to.path === '/500')
-          next({ name: 'Root' })
-        else
-          next()
-      }
-      catch (error) {
-        if (to.path !== '/500')
-          next({ name: '500' })
-        else
-          next()
-      }
+      // todo：这里的逻辑有问题，需要修改
+      // try {
+      //   const data = await authStore.getSession()
+      //   if (String(data.auth) === 'false' && authStore.token)
+      //     authStore.removeToken()
+      //   if (to.path === '/500')
+      //     next({ name: 'Root' })
+      //   else
+      //     next()
+      // }
+      // catch (error) {
+      //   if (to.path !== '/500')
+      //     next({ name: '500' })
+      //   else
+      //     next()
+      // }
+      next()
     }
     else {
       next()

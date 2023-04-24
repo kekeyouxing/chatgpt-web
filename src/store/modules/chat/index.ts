@@ -27,7 +27,12 @@ export const useChatStore = defineStore('chat-store', {
       this.usingContext = context
       this.recordState()
     },
-
+    showAppStore() {
+      if (this.active === 1)
+        return
+      router.push({ name: 'Menu' })
+      this.active = 1// 1 is used for app menu
+    },
     addHistory(history: Chat.History, chatData: Chat.Chat[] = []) {
       this.history.unshift(history)
       this.chat.unshift({ uuid: history.uuid, data: chatData })

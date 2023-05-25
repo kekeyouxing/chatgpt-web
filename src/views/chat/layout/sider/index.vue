@@ -1,9 +1,8 @@
 <script setup lang='ts'>
 import type { CSSProperties } from 'vue'
 import { computed, ref, watch } from 'vue'
-import { NButton, NLayoutSider } from 'naive-ui'
-import List from './List.vue'
-import Footer from './Footer.vue'
+import { NLayoutSider } from 'naive-ui'
+import Menu from './Menu.vue'
 import { useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { PromptStore } from '@/components/common'
@@ -15,11 +14,6 @@ const show = ref(false)
 
 const collapsed = computed(() => appStore.siderCollapsed)
 
-function showAppStore() {
-  chatStore.showAppStore()
-  if (isMobile.value)
-    appStore.setSiderCollapsed(true)
-}
 function handleAdd() {
   chatStore.addHistory({ title: 'New Chat', uuid: Date.now(), isEdit: false })
   if (isMobile.value)
@@ -73,18 +67,13 @@ watch(
     :style="getMobileClass"
     @update-collapsed="handleUpdateCollapsed"
   >
-    <div class="flex flex-col h-full" :style="mobileSafeArea">
+    <div class="flex flex-col h-full bg-neutral-100" :style="mobileSafeArea">
       <main class="flex flex-col flex-1 min-h-0">
-        <div class="flex-1 min-h-0 py-4 overflow-hidden">
-          <List />
-        </div>
-        <div class="p-4">
-          <NButton block @click="showAppStore">
-            {{ $t('chat.appStore') }}
-          </NButton>
+        <div class="flex-1 min-h-0 py-2 overflow-hidden">
+          <Menu />
         </div>
       </main>
-      <Footer />
+      <!--      <Footer /> -->
     </div>
   </NLayoutSider>
   <template v-if="isMobile">

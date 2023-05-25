@@ -1,25 +1,25 @@
 <script setup lang='ts'>
 import { computed } from 'vue'
-import { NInput, NPopconfirm, NScrollbar } from 'naive-ui'
+import { NButton, NInput, NPopconfirm, NScrollbar } from 'naive-ui'
 import { SvgIcon } from '@/components/common'
-import { useAppStore, useChatStore } from '@/store'
+import { useAppStore, useCorrectStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { debounce } from '@/utils/functions/debounce'
 
 const { isMobile } = useBasicLayout()
 
 const appStore = useAppStore()
-const chatStore = useChatStore()
+const correctStore = useCorrectStore()
 
-const dataSources = computed(() => chatStore.history)
+const dataSources = computed(() => correctStore.history)
 
 async function handleSelect({ uuid }: Chat.History) {
   if (isActive(uuid))
     return
 
-  if (chatStore.active)
-    chatStore.updateHistory(chatStore.active, { isEdit: false })
-  await chatStore.setActive(uuid)
+  if (correctStore.active)
+    correctStore.updateHistory(correctStore.active, { isEdit: false })
+  await correctStore.setActive(uuid)
 
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
@@ -27,12 +27,12 @@ async function handleSelect({ uuid }: Chat.History) {
 
 function handleEdit({ uuid }: Chat.History, isEdit: boolean, event?: MouseEvent) {
   event?.stopPropagation()
-  chatStore.updateHistory(uuid, { isEdit })
+  correctStore.updateHistory(uuid, { isEdit })
 }
 
 function handleDelete(index: number, event?: MouseEvent | TouchEvent) {
   event?.stopPropagation()
-  chatStore.deleteHistory(index)
+  correctStore.deleteHistory(index)
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
 }
@@ -42,17 +42,28 @@ const handleDeleteDebounce = debounce(handleDelete, 600)
 function handleEnter({ uuid }: Chat.History, isEdit: boolean, event: KeyboardEvent) {
   event?.stopPropagation()
   if (event.key === 'Enter')
-    chatStore.updateHistory(uuid, { isEdit })
+    correctStore.updateHistory(uuid, { isEdit })
 }
 
 function isActive(uuid: number) {
-  return chatStore.active === uuid
+  return correctStore.active === uuid
+}
+
+function handleAdd() {
+  correctStore.addHistory({ title: 'Correction', uuid: Date.now(), isEdit: false })
+  if (isMobile.value)
+    appStore.setSiderCollapsed(true)
 }
 </script>
 
 <template>
-  <NScrollbar class="px-4">
+  <NScrollbar class="p-4">
     <div class="flex flex-col gap-2 text-sm">
+      <div>
+        <NButton dashed block @click="handleAdd">
+          {{ $t('chat.newRecord') }}
+        </NButton>
+      </div>
       <template v-if="!dataSources.length">
         <div class="flex flex-col items-center mt-4 text-center text-neutral-300">
           <SvgIcon icon="ri:inbox-line" class="mb-2 text-3xl" />

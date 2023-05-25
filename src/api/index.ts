@@ -52,6 +52,27 @@ export function fetchChatAPIProcess<T = any>(
   })
 }
 
+export function fetchCorrectAPIProcess<T = any>(
+  params: {
+    prompt: string
+    bizType: number
+    signal?: GenericAbortSignal
+    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void },
+) {
+  // to add session: const authStore = useAuthStore()
+  const data: Record<string, any> = {
+    prompt: params.prompt,
+    bizType: params.bizType,
+  }
+
+  return post<T>({
+    url: 'completionStream',
+    data,
+    signal: params.signal,
+    onDownloadProgress: params.onDownloadProgress,
+  })
+}
+
 export function fetchSession<T>() {
   return post<T>({
     url: '/session',

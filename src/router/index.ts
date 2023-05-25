@@ -1,8 +1,8 @@
 import type { App } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { setupPageGuard } from './permission'
 import { ChatLayout } from '@/views/chat/layout'
+import { setupPageGuard } from '@/router/permission'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -31,6 +31,18 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/english',
+    name: 'English',
+    component: ChatLayout,
+    children: [
+      {
+        path: '/english/correct/:uuid?',
+        name: 'Correct',
+        component: () => import('@/views/english/index.vue'),
+      },
+    ],
+  },
+  {
     path: '/404',
     name: '404',
     component: () => import('@/views/exception/404/index.vue'),
@@ -55,6 +67,7 @@ export const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
+// todo 前端权限控制
 setupPageGuard(router)
 
 export async function setupRouter(app: App) {

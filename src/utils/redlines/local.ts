@@ -9,6 +9,7 @@ export function createRedlines() {
   function setTest(test: string | null = null) {
     _seq2 = tokenizeText(concatenateParagraphsAndAddChr182(test || ''))
   }
+  // "she ¶ said ¶ hello" => ["she", " ¶ ", "said", " ¶ ", "hello"]
   function tokenizeText(text: string) {
     const tokenizer = /((?:[^()\s]+|[().?!-])\s*)/g
     return text.match(tokenizer)
@@ -26,6 +27,7 @@ export function createRedlines() {
     return result
   }
 
+  // "she\nsaid\nhello" => "she ¶ said ¶ hello"
   function concatenateParagraphsAndAddChr182(text: string): string {
     const paragraphs = splitParagraphs(text)
     const result = []
@@ -45,6 +47,9 @@ export function createRedlines() {
     return matcher.getOpcodes()
   }
 
+  function getErrorOutputMarkdown(text: string): string {
+    return `<span style="color:#d03050;font-weight:700;background-color: rgba(208, 48, 80, 0.16)">${text}</span>`
+  }
   function getOutputMarkdown(): string {
     const result: string[] = []
     let md_styles = { ins: ['ins', 'ins'], del: ['del', 'del'] }
@@ -61,7 +66,7 @@ export function createRedlines() {
     for (const [tag, i1, i2, j1, j2] of getOpcodes()) {
       if (tag === 'equal') {
         let temp_str = _seq1.slice(i1, i2).join('')
-        temp_str = temp_str.replace(/¶ /g, '\n\n')
+        temp_str = temp_str.replace(/¶ /g, '<br/>')
         result.push(temp_str)
       }
       else if (tag === 'insert') {
@@ -69,7 +74,7 @@ export function createRedlines() {
         const splits = temp_str.split('¶ ')
         for (const split of splits) {
           result.push(`<${md_styles.ins[0]}>${split}</${md_styles.ins[1]}>`)
-          result.push('\n\n')
+          result.push('<br/>')
         }
         if (splits.length > 0)
           result.pop()
@@ -83,7 +88,7 @@ export function createRedlines() {
         const splits = temp_str.split('¶ ')
         for (const split of splits) {
           result.push(`<${md_styles.ins[0]}>${split}</${md_styles.ins[1]}>`)
-          result.push('\n\n')
+          result.push('<br/>')
         }
         if (splits.length > 0)
           result.pop()
@@ -93,6 +98,7 @@ export function createRedlines() {
     return result.join('')
   }
   return {
+    getErrorOutputMarkdown,
     getOutputMarkdown,
     setSource,
     setTest,

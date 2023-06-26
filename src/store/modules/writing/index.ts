@@ -1,15 +1,15 @@
 import { defineStore } from 'pinia'
-import { getLocalState, setLocalState } from '@/store/modules/correct/helper'
+import { getLocalState, setLocalState } from '@/store/modules/writing/helper'
 import { router } from '@/router'
 
-export const useCorrectStore = defineStore('correct-store', {
-  state: (): Correct.CorrectState => getLocalState(),
+export const useWritingStore = defineStore('writing-store', {
+  state: (): Writing.WritingState => getLocalState(),
   getters: {
-    getCorrectByUuid(state: Correct.CorrectState) {
+    getWritingByUuid(state: Writing.WritingState) {
       return (uuid?: number) => {
         if (uuid)
-          return state.correct.find(item => item.uuid === uuid)?.data ?? { dateTime: '', textAnswer: '', textQuestion: '', textSuggestion: '', textAnswerMd: '' }
-        return state.correct.find(item => item.uuid === state.active)?.data ?? { dateTime: '', textAnswer: '', textQuestion: '', textSuggestion: '', textAnswerMd: '' }
+          return state.writing.find(item => item.uuid === uuid)?.data ?? { dateTime: '', title: '', difficulty: 1, answer: '', random: 0 }
+        return state.writing.find(item => item.uuid === state.active)?.data ?? { dateTime: '', title: '', difficulty: 1, answer: '', random: 0 }
       }
     },
   },
@@ -33,12 +33,12 @@ export const useCorrectStore = defineStore('correct-store', {
 
     async reloadRoute(uuid?: number) {
       this.recordState()
-      await router.push({ name: 'Correct', params: { uuid } })
+      await router.push({ name: 'Writing', params: { uuid } })
     },
 
     async deleteHistory(index: number) {
       this.history.splice(index, 1)
-      this.correct.splice(index, 1)
+      this.writing.splice(index, 1)
 
       if (this.history.length === 0) {
         this.active = null
@@ -68,65 +68,65 @@ export const useCorrectStore = defineStore('correct-store', {
       }
     },
 
-    addHistory(history: Correct.History, correctData: Correct.CorrectData = { dateTime: '', textQuestion: '', textAnswer: '', loading: false, textAnswerMd: '' }) {
+    addHistory(history: Writing.History, writingData: Writing.WritingData = { dateTime: '', title: '', difficulty: 1, answer: '', random: 0 }) {
       this.history.unshift(history)
-      this.correct.unshift({ uuid: history.uuid, data: correctData })
+      this.writing.unshift({ uuid: history.uuid, data: writingData })
       this.active = history.uuid
       this.reloadRoute(history.uuid)
     },
 
-    addCorrectByUuid(uuid: number, correct: Correct.CorrectData) {
+    addWritingByUuid(uuid: number, writing: Writing.WritingData) {
       if (!uuid || uuid === 0) {
         if (this.history.length === 0) {
           const uuid = Date.now()
-          this.history.push({ uuid, title: correct.textQuestion, isEdit: false })
-          this.correct.push({ uuid, data: correct })
+          this.history.push({ uuid, title: writing.title, isEdit: false })
+          this.writing.push({ uuid, data: writing })
           this.active = uuid
           this.recordState()
         }
         else {
-          this.correct[0].data = correct
-          if (this.history[0].title === 'Correction')
-            this.history[0].title = correct.textQuestion
+          this.writing[0].data = writing
+          if (this.history[0].title === 'Writing')
+            this.history[0].title = writing.title
           this.recordState()
         }
       }
 
-      const index = this.correct.findIndex(item => item.uuid === uuid)
+      const index = this.writing.findIndex(item => item.uuid === uuid)
       if (index !== -1) {
-        this.correct[index].data = correct
-        if (this.history[index].title === 'Correction')
-          this.history[index].title = correct.textQuestion
+        this.writing[index].data = writing
+        if (this.history[index].title === 'Writing')
+          this.history[index].title = writing.title
         this.recordState()
       }
     },
 
-    updateCorrectByUuid(uuid: number, correct: Correct.CorrectData) {
+    updateWritingByUuid(uuid: number, writing: Writing.WritingData) {
       if (!uuid || uuid === 0) {
-        if (this.correct.length) {
-          this.correct[0].data = correct
+        if (this.writing.length) {
+          this.writing[0].data = writing
           this.recordState()
         }
         return
       }
-      const index = this.correct.findIndex(item => item.uuid === uuid)
+      const index = this.writing.findIndex(item => item.uuid === uuid)
       if (index !== -1) {
-        this.correct[index].data = correct
+        this.writing[index].data = writing
         this.recordState()
       }
     },
-    updateCorrectSomeByUuid(uuid: number, correct: Partial<Correct.CorrectData>) {
+    updateWritingSomeByUuid(uuid: number, writing: Partial<Writing.WritingData>) {
       if (!uuid || uuid === 0) {
-        if (this.correct.length) {
-          this.correct[0].data = { ...this.correct[0].data, ...correct }
+        if (this.writing.length) {
+          this.writing[0].data = { ...this.writing[0].data, ...writing }
           this.recordState()
         }
         return
       }
 
-      const correctIndex = this.correct.findIndex(item => item.uuid === uuid)
-      if (correctIndex !== -1) {
-        this.correct[correctIndex].data = { ...this.correct[correctIndex].data, ...correct }
+      const writingIndex = this.writing.findIndex(item => item.uuid === uuid)
+      if (writingIndex !== -1) {
+        this.writing[writingIndex].data = { ...this.writing[writingIndex].data, ...writing }
         this.recordState()
       }
     },

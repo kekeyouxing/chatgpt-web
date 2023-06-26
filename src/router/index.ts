@@ -38,7 +38,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/english/correct/:uuid?',
         name: 'Correct',
-        component: () => import('@/views/english/index.vue'),
+        component: () => import('@/views/english/correct/index.vue'),
+      },
+      {
+        path: '/english/writing/:uuid?',
+        name: 'Writing',
+        component: () => import('@/views/english/writing/index.vue'),
       },
     ],
   },

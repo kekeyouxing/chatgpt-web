@@ -3,10 +3,6 @@ import { useCorrectStore } from '@/store'
 export function useCorrect() {
   const correctStore = useCorrectStore()
 
-  // const getCorrectByUuidAndIndex = (uuid: number, index: number) => {
-  //   return correctStore.getCorrectByUuidAndIndex(uuid, index)
-  // }
-
   const addCorrect = (uuid: number, correct: Correct.CorrectData) => {
     correctStore.addCorrectByUuid(uuid, correct)
   }
@@ -23,7 +19,5 @@ export function useCorrect() {
     addCorrect,
     updateCorrect,
     updateCorrectSome,
-    // updateCorrectSome,
-    // getCorrectByUuidAndIndex,
   }
 }

@@ -31,6 +31,7 @@ export default defineConfig((env) => {
     resolve: {
       alias: {
         '@': path.resolve(process.cwd(), 'src'),
+        'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js',
       },
     },
     plugins: setupPlugins(viteEnv),

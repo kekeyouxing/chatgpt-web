@@ -52,21 +52,43 @@ export function fetchChatAPIProcess<T = any>(
   })
 }
 
+export function fetchWritingAPI<T = any>(
+  params: {
+    title: string
+    random: number
+    difficulty: number
+    signal?: GenericAbortSignal
+    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
+  },
+) {
+  // to add session: const authStore = useAuthStore()
+  const data: Record<string, any> = {
+    title: params.title,
+    random: params.random,
+    difficulty: params.difficulty,
+  }
+
+  return post<T>({
+    url: '/english/writing',
+    data,
+    signal: params.signal,
+    onDownloadProgress: params.onDownloadProgress,
+  })
+}
 export function fetchCorrectAPIProcess<T = any>(
   params: {
     prompt: string
-    bizType: number
     signal?: GenericAbortSignal
-    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void },
+    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
+  },
 ) {
   // to add session: const authStore = useAuthStore()
   const data: Record<string, any> = {
     prompt: params.prompt,
-    bizType: params.bizType,
   }
 
   return post<T>({
-    url: 'completionStream',
+    url: '/english/writing',
     data,
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,

@@ -10,7 +10,7 @@ import { t } from '@/locales'
 interface Props {
   text?: string
   loading?: boolean
-  asRawText?: boolean
+  htmlText?: boolean
 }
 
 const props = defineProps<Props>()
@@ -49,10 +49,7 @@ const wrapClass = computed(() => {
 })
 
 const text = computed(() => {
-  const value = props.text ?? ''
-  // if (!props.asRawText)
-  //   return mdi.render(value)
-  return value
+  return props.text ?? ''
 })
 
 function highlightBlock(str: string, lang?: string) {
@@ -65,7 +62,7 @@ defineExpose({ textRef })
 <template>
   <div class="text-black" :class="wrapClass">
     <div ref="textRef" class="leading-relaxed break-words">
-      <div v-if="!asRawText" class="markdown-body" v-html="text" />
+      <div v-if="htmlText" class="markdown-body" v-html="text" />
       <div v-else class="whitespace-pre-wrap" v-text="text" />
       <template v-if="loading">
         <span class="dark:text-white w-[4px] h-[20px] block animate-blink" />

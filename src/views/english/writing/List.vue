@@ -2,55 +2,55 @@
 import { computed } from 'vue'
 import { NButton, NInput, NPopconfirm, NScrollbar } from 'naive-ui'
 import { SvgIcon } from '@/components/common'
-import { useAppStore, useCorrectStore } from '@/store'
+import { useAppStore, useWritingStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { debounce } from '@/utils/functions/debounce'
 
 const { isMobile } = useBasicLayout()
 
 const appStore = useAppStore()
-const correctStore = useCorrectStore()
+const writingStore = useWritingStore()
 
-const dataSources = computed(() => correctStore.history)
+const dataSources = computed(() => writingStore.history)
 
-async function handleSelect({ uuid }: Chat.History) {
+async function handleSelect({ uuid }: Writing.History) {
   if (isActive(uuid))
     return
 
-  if (correctStore.active)
-    correctStore.updateHistory(correctStore.active, { isEdit: false })
-  await correctStore.setActive(uuid)
+  if (writingStore.active)
+    writingStore.updateHistory(writingStore.active, { isEdit: false })
+  await writingStore.setActive(uuid)
 
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
 }
 
-function handleEdit({ uuid }: Chat.History, isEdit: boolean, event?: MouseEvent) {
+function handleEdit({ uuid }: Writing.History, isEdit: boolean, event?: MouseEvent) {
   event?.stopPropagation()
-  correctStore.updateHistory(uuid, { isEdit })
+  writingStore.updateHistory(uuid, { isEdit })
 }
 
 function handleDelete(index: number, event?: MouseEvent | TouchEvent) {
   event?.stopPropagation()
-  correctStore.deleteHistory(index)
+  writingStore.deleteHistory(index)
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
 }
 
 const handleDeleteDebounce = debounce(handleDelete, 600)
 
-function handleEnter({ uuid }: Chat.History, isEdit: boolean, event: KeyboardEvent) {
+function handleEnter({ uuid }: Writing.History, isEdit: boolean, event: KeyboardEvent) {
   event?.stopPropagation()
   if (event.key === 'Enter')
-    correctStore.updateHistory(uuid, { isEdit })
+    writingStore.updateHistory(uuid, { isEdit })
 }
 
 function isActive(uuid: number) {
-  return correctStore.active === uuid
+  return writingStore.active === uuid
 }
 
 function handleAdd() {
-  correctStore.addHistory({ title: 'Correction', uuid: Date.now(), isEdit: false })
+  writingStore.addHistory({ title: 'Writing', uuid: Date.now(), isEdit: false })
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
 }

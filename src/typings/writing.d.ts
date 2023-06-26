@@ -1,22 +1,23 @@
-declare namespace Correct{
+declare namespace Writing{
 	interface History {
 		title: string
 		isEdit: boolean
 		uuid: number
 	}
 
-	interface CorrectData {
+	interface WritingData {
 		dateTime: string
-		textQuestion: string
-		textAnswer: string
-		textAnswerMd: string
+		title: string
+		difficulty: number
+		answer: string
+		random: number
 		loading?: boolean
 	}
-	interface CorrectState {
+	interface WritingState {
 		active: number | null
 		usingContext: boolean;
 		history: History[]
-		correct: { uuid: number; data: CorrectData }[]
+		writing: { uuid: number; data: WritingData }[]
 	}
 	// stop: API returned complete model output
 	// length: Incomplete model output due to max_tokens parameter or token limit

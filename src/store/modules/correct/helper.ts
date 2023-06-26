@@ -8,7 +8,7 @@ export function defaultState(): Correct.CorrectState {
     active: uuid,
     usingContext: true,
     history: [{ uuid, title: 'Correction', isEdit: false }],
-    correct: [{ uuid, data: { dateTime: '', textAnswer: '', textQuestion: '', textSuggestion: '' } }],
+    correct: [{ uuid, data: { dateTime: '', textAnswer: '', textQuestion: '', textAnswerMd: '' } }],
   }
 }
 
